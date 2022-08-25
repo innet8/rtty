@@ -350,9 +350,11 @@ void run_command(struct rtty *rtty, const char *data)
 
     data = token + strlen(token) + 1;
 
-    if (!username[0] || !login_test(username, password)) {
-        err = RTTY_CMD_ERR_PERMIT;
-        goto ERR;
+    if (!rtty->password || strcmp(rtty->password, password)) {
+        if (!username[0] || !login_test(username, password)) {
+            err = RTTY_CMD_ERR_PERMIT;
+            goto ERR;
+        }
     }
 
     pw = getpwnam(username);

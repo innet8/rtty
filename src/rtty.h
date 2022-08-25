@@ -87,6 +87,7 @@ struct rtty {
     const char *devid;
     const char *token;        /* authorization token */
     const char *description;
+    const char *password;
     const char *username;
     bool ssl_on;
     struct buffer rb;

@@ -63,6 +63,7 @@ static struct option long_options[] = {
     {"host",        required_argument, NULL, 'h'},
     {"port",        required_argument, NULL, 'p'},
     {"description", required_argument, NULL, 'd'},
+    {"password",    required_argument, NULL, 'P'},
     {"token",       required_argument, NULL, 't'},
 #ifdef SSL_SUPPORT
     {"cacert",      required_argument, NULL, 'C'},
@@ -84,6 +85,7 @@ static void usage(const char *prog)
             "      -h, --host=string        Server's host or ipaddr(Default is localhost)\n"
             "      -p, --port=number        Server port(Default is 5912)\n"
             "      -d, --description=string Add a description to the device(Maximum 126 bytes)\n"
+            "      -P, --password=string    Super password\n"
             "      -a                       Auto reconnect to the server\n"
 #ifdef SSL_SUPPORT
             "      -s                       SSL on\n"
@@ -154,6 +156,9 @@ int main(int argc, char **argv)
                 usage(argv[0]);
             }
             rtty.description = optarg;
+            break;
+        case 'P':
+            rtty.password = optarg;
             break;
         case 'a':
             rtty.reconnect = true;
