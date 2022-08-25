@@ -108,7 +108,7 @@ static void usage(const char *prog)
 
 int main(int argc, char **argv)
 {
-    char shortopts[32] = "I:h:p:d:aDt:f:RS:vV";
+    char shortopts[32] = "I:h:p:P:d:aDt:f:RS:vV";
     struct ev_loop *loop = EV_DEFAULT;
     struct ev_signal signal_watcher;
     bool background = false;
