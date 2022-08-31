@@ -1,0 +1,61 @@
+name: imagebuilder
+on:
+  push:
+    tags:
+      - "v*-image"
+
+jobs:
+  builder:
+    runs-on: ubuntu-latest
+    container:
+      image: kuaifan/gl_imagebuilder:0.0.2
+      volumes:
+        - hicloud:/hicloud
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Firmware
+        env:
+          RELEASE_VERSION: ${{ github.ref }}
+        run: |
+          VER="$(echo "${RELEASE_VERSION}" | awk -F '/v' '{print $2}' | sed 's/-image$//')"
+          TAG="v${VER}-ipk"
+          PKG="rtty-openssl_${VER}-hi"
+          
+          cd /
+          git clone https://github.com/gl-inet/imagebuilder.git
+          cd imagebuilder
+          git clone https://github.com/gl-inet/glinet.git
+          sed -i 's/ipset"/ipset bash coreutils-base64 iptables-mod-iprange kmod-ipt-iprange"/' glinet/images.json
+          
+          ./gl_image -p mifi
+          wget -P imagebuilder/3.8/openwrt-imagebuilder-ath79-nand_3.8/packages/ https://github.com/innet8/rtty/releases/download/${TAG}/${PKG}_mips_24kc.ipk
+          ./gl_image -p mifi 
+          ./gl_image -p usb150 
+          ./gl_image -p ar750s 
+          ./gl_image -p x300b
+          
+          ./gl_image -p mv1000-emmc
+          wget -P imagebuilder/3.8/openwrt-imagebuilder-mvebu-cortexa53_3.8/packages/ https://github.com/innet8/rtty/releases/download/${TAG}/${PKG}_aarch64_cortex-a53.ipk
+          ./gl_image -p mv1000-emmc
+          
+          ./gl_image -p b1300
+          wget -P imagebuilder/3.5/openwrt-imagebuilder-ipq-ipq40xx-QSDK_Premium_3.5/packages/ https://github.com/innet8/rtty/releases/download/${TAG}/${PKG}_ipq.ipk
+          ./gl_image -p b1300
+          ./gl_image -p s1300
+          
+          ./gl_image -p ax1800
+          wget -P imagebuilder/3.6/openwrt-imagebuilder-ipq-ipq60xx-QSDK_Premium_3.6/packages/ https://github.com/innet8/rtty/releases/download/${TAG}/${PKG}_ipq.ipk
+          ./gl_image -p ax1800
+          
+          /bin/cp -rf bin/*/*/*.bin /hicloud
+          /bin/cp -rf bin/*/*/*.tar /hicloud
+          /bin/cp -rf bin/*/*/*.img /hicloud
+
+      - name: Upload assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "/hicloud/*"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
