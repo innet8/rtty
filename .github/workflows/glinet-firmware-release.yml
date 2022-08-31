@@ -43,7 +43,6 @@ jobs:
           ./gl_image -p b1300
           wget -P imagebuilder/3.5/openwrt-imagebuilder-ipq-ipq40xx-QSDK_Premium_3.5/packages/ https://github.com/innet8/rtty/releases/download/${TAG}/${PKG}_ipq.ipk
           ./gl_image -p b1300
-          ./gl_image -p s1300
           
           ./gl_image -p ax1800
           wget -P imagebuilder/3.6/openwrt-imagebuilder-ipq-ipq60xx-QSDK_Premium_3.6/packages/ https://github.com/innet8/rtty/releases/download/${TAG}/${PKG}_ipq.ipk
@@ -62,10 +61,39 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload assets (retry)
+      - name: Upload assets (retry2)
         id: upload_try2
         if: steps.upload_try1.outcome == 'failure'
         continue-on-error: true
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "/hicloud/*"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload assets (retry3)
+        id: upload_try3
+        if: steps.upload_try2.outcome == 'failure'
+        continue-on-error: true
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "/hicloud/*"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload assets (retry4)
+        id: upload_try4
+        if: steps.upload_try3.outcome == 'failure'
+        continue-on-error: true
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "/hicloud/*"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload assets (retry5)
+        id: upload_try5
+        if: steps.upload_try4.outcome == 'failure'
         uses: softprops/action-gh-release@v1
         with:
           files: "/hicloud/*"
