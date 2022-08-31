@@ -8,12 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=rtty
-PKG_VERSION:=8.0.0
-PKG_RELEASE:=1
+
+PKG_VERSION:=8.0.1-1
+PKG_RELEASE:=hi
+PKG_HASH:=6a3044b9346caa17a5c4b2b7aa055367963fbddddd1c1c47cb6f8a1c223d4117
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL=https://github.com/zhaojh329/rtty/releases/download/v$(PKG_VERSION)
-PKG_HASH:=b9c555005b76c1ad0f5af891964375bbdf50ee22b9a9f53ddd48d2cdb4e53b49
+PKG_SOURCE_URL=https://github.com/innet8/rtty/releases/download/v$(PKG_VERSION)
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 CMAKE_INSTALL:=1
 
@@ -30,14 +31,13 @@ define Package/rtty/Default
   SECTION:=utils
   CATEGORY:=Utilities
   SUBMENU:=Terminal
-  URL:=https://github.com/zhaojh329/rtty
+  URL:=https://github.com/innet8/rtty
   DEPENDS:=+libev $(2)
   VARIANT:=$(1)
   PROVIDES:=rtty
 endef
 
 Package/rtty-openssl=$(call Package/rtty/Default,openssl,+PACKAGE_rtty-openssl:libopenssl)
-Package/rtty-wolfssl=$(call Package/rtty/Default,wolfssl,+PACKAGE_rtty-wolfssl:libwolfssl)
 Package/rtty-mbedtls=$(call Package/rtty/Default,mbedtls,+PACKAGE_rtty-mbedtls:libmbedtls +PACKAGE_rtty-mbedtls:zlib)
 Package/rtty-nossl=$(call Package/rtty/Default,nossl)
 
@@ -45,14 +45,11 @@ define Package/rtty-openssl/conffiles
 /etc/config/rtty
 endef
 
-Package/rtty-wolfssl/conffiles = $(Package/rtty-openssl/conffiles)
 Package/rtty-mbedtls/conffiles = $(Package/rtty-openssl/conffiles)
 Package/rtty-nossl/conffiles = $(Package/rtty-openssl/conffiles)
 
 ifeq ($(BUILD_VARIANT),openssl)
   CMAKE_OPTIONS += -DUSE_OPENSSL=ON
-else ifeq ($(BUILD_VARIANT),wolfssl)
-  CMAKE_OPTIONS += -DUSE_WOLFSSL=ON
 else ifeq ($(BUILD_VARIANT),mbedtls)
   CMAKE_OPTIONS += -DUSE_MBEDTLS=ON
 else
@@ -60,13 +57,13 @@ else
 endif
 
 define Package/rtty-$(BUILD_VARIANT)/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/init.d $(1)/etc/config
+	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/init.d $(1)/etc/config $(1)/etc/uci-defaults
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/rtty $(1)/usr/sbin
 	$(INSTALL_BIN) ./files/rtty.init $(1)/etc/init.d/rtty
 	$(INSTALL_CONF) ./files/rtty.config $(1)/etc/config/rtty
+	$(INSTALL_BIN) ./files/99-rtty $(1)/etc/uci-defaults
 endef
 
 $(eval $(call BuildPackage,rtty-openssl))
-$(eval $(call BuildPackage,rtty-wolfssl))
 $(eval $(call BuildPackage,rtty-mbedtls))
 $(eval $(call BuildPackage,rtty-nossl))
