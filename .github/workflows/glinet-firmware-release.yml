@@ -54,6 +54,18 @@ jobs:
           /bin/cp -rf bin/*/*/*.img /hicloud
 
       - name: Upload assets
+        id: upload_try1
+        continue-on-error: true
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "/hicloud/*"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload assets (retry)
+        id: upload_try2
+        if: steps.upload_try1.outcome == 'failure'
+        continue-on-error: true
         uses: softprops/action-gh-release@v1
         with:
           files: "/hicloud/*"
