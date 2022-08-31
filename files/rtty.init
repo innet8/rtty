@@ -11,6 +11,7 @@ validate_rtty_section() {
     'id:maxlength(63)' \
     'description:maxlength(126)' \
     'password:maxlength(32)' \
+    'onlyid:maxlength(32)' \
     'host:host' \
     'port:port' \
     'ssl:bool:0' \
