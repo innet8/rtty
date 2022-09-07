@@ -28,6 +28,7 @@ set_bypass_host() {
   local tableId=99999
   local markId=0x33a
   local ifaceName="99-hi-bypass"
+  
   local gatewayIP=$(ip route show 1/0 | head -n1 | sed -e 's/^default//' | awk '{print $2}' | awk -F. '$1<=255&&$2<=255&&$3<=255&&$4<=255{print $1"."$2"."$3"."$4}')
   if [ -z "$gatewayIP" ]; then
     (
