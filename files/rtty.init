@@ -168,7 +168,7 @@ start_rtty() {
   }
 
   [ -z "$onlyid" ] && {
-    onlyid=$(date +%s)
+    onlyid=$(head /dev/urandom | md5sum | cut -c 1-8)
     uci set rtty.general.onlyid="$onlyid"
     uci commit rtty
   }
