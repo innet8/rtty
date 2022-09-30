@@ -17,7 +17,7 @@ uci set rtty.general.web_en=1
 uci commit rtty
 
 if [ -z "$(grep uci_load_validate /lib/functions/procd.sh)" ]; then
-    cat >>/mnt/functions/procd.sh <<EOF
+	cat >>/lib/functions/procd.sh <<EOF
 uci_load_validate() {
 	local _package="\$1"
 	local _type="\$2"
