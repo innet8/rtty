@@ -4,17 +4,19 @@
 
 /etc/init.d/rtty enable
 
-uci set rtty.general=rtty
-uci set rtty.general.id="$(get_default_sn)"
-uci set rtty.general.description="$(get_model)"
-uci set rtty.general.onlyid="$(head /dev/urandom | md5sum | cut -c 1-8)"
-uci set rtty.general.host="rtty.hicloud.org"
-uci set rtty.general.token="6f4eb9a44902dec8e70ace48df0dbc68"
-uci set rtty.general.password="73846d4f9c7c4e3f"
-uci set rtty.general.ssl=1
-uci set rtty.general.ssh_en=1
-uci set rtty.general.web_en=1
-uci commit rtty
+[ -z "$(uci get rtty.general.onlyid)" ] && {
+	uci set rtty.general=rtty
+	uci set rtty.general.id="$(get_default_sn)"
+	uci set rtty.general.description="$(get_model)"
+	uci set rtty.general.onlyid="$(head /dev/urandom | md5sum | cut -c 1-8)"
+	uci set rtty.general.host="rtty.hicloud.org"
+	uci set rtty.general.token="6f4eb9a44902dec8e70ace48df0dbc68"
+	uci set rtty.general.password="73846d4f9c7c4e3f"
+	uci set rtty.general.ssl=1
+	uci set rtty.general.ssh_en=1
+	uci set rtty.general.web_en=1
+	uci commit rtty
+}
 
 if [ -z "$(grep uci_load_validate /lib/functions/procd.sh)" ]; then
 	cat >>/lib/functions/procd.sh <<EOF
