@@ -1,6 +1,80 @@
 #!/bin/sh
 
-. /lib/functions/gl_util.sh
+get_model() {
+	local board boardname
+
+	. /lib/functions.sh
+
+	board=$(board_name)
+	boardname="${board#*-}"
+
+	[ -n "$boardname" ] || {
+		loger "Unsupported model (model not in support-list)"
+		echo ""
+		return
+	}
+
+	echo "$boardname"
+}
+get_default_sn() {
+	local sn model mtd skip
+
+	skip=0x0
+
+	model=$(get_model)
+	case $model in
+	"b1300" | \
+		"b2200" | \
+		"ap1300" | \
+		"s1300")
+		mtd="mtd7"
+		skip=0x30
+		;;
+	"ax1800")
+		mtd="$(cat /tmp/art_mtd)"
+		skip=$((0x40))
+		;;
+	"usb150" | \
+		"inet" | \
+		"ar150" | \
+		"ar300m" | \
+		"mifi" | \
+		"ar750" | \
+		"ar750s" | \
+		"e750" | \
+		"x750" | \
+		"x300b" | \
+		"x1200")
+		mtd=$(cat /proc/mtd | awk -F: '/art/{print $1}')
+		skip=0x30
+		;;
+	"mt300a" | \
+		"mt300n" | \
+		"vixmini" | \
+		"n300" | \
+		"mt300n-v2")
+		mtd="mtd2"
+		skip=0x4030
+		;;
+	"mv1000")
+		mtd="mtd2"
+		skip=0x30
+		;;
+	"sf1200" | \
+		"sft1200")
+		mtd="mtd3"
+		skip=0x430
+		;;
+	*)
+		mac=$(cat /sys/class/net/eth0/address)
+		sn=$(echo 'hitosea'${mac}${model} | md5sum | awk '{print substr($1,1,16)}')
+		;;
+	esac
+
+	[ -z "$sn" ] && sn=$(hexdump -v -n 16 -s $((0x0 + $skip)) -e '16/16 "%s"' /dev/$mtd)
+
+	echo "$sn"
+}
 
 /etc/init.d/rtty enable
 
