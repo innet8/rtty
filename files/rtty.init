@@ -51,22 +51,22 @@ set_bypass_host() {
 
   if [ -z "$(cat /etc/dnsmasq.conf | grep 'conf-dir=/etc/dnsmasq.d')" ]; then
     sed -i /conf-dir=/d /etc/dnsmasq.conf
-    echo 'conf-dir=/etc/dnsmasq.d' >> /etc/dnsmasq.conf
+    echo 'conf-dir=/etc/dnsmasq.d' >>/etc/dnsmasq.conf
   fi
   if [ -z "$(cat /etc/dnsmasq.conf | grep 'resolv-file=/etc/resolv.dnsmasq.conf')" ]; then
     sed -i /resolv-file=/d /etc/dnsmasq.conf
-    echo 'resolv-file=/etc/resolv.dnsmasq.conf' >> /etc/dnsmasq.conf
+    echo 'resolv-file=/etc/resolv.dnsmasq.conf' >>/etc/dnsmasq.conf
   fi
 
   if [ ! -f "$domainFile" ]; then
     touch $domainFile
   fi
 
-  iptables -t mangle -D OUTPUT -m set --match-set ${thName} dst -j ACCEPT &> /dev/null
-  iptables -t mangle -D OUTPUT -m set --match-set ${thName} dst -j MARK --set-mark ${markId} &> /dev/null
-  ipset destroy ${thName} &> /dev/null
-  ip rule del fwmark ${markId} table ${tableId} &> /dev/null
-  sed -i /#${thName}#/d /etc/dnsmasq.conf
+  iptables -t mangle -D OUTPUT -m set --match-set ${thName} dst -j ACCEPT &>/dev/null
+  iptables -t mangle -D OUTPUT -m set --match-set ${thName} dst -j MARK --set-mark ${markId} &>/dev/null
+  ipset destroy ${thName} &>/dev/null
+  ip rule del fwmark ${markId} table ${tableId} &>/dev/null
+  sed -i /#${thName} #/d /etc/dnsmasq.conf
   sed -i 's/,${thName},/,/g' ${domainFile}
   sed -i 's/,${thName}$//g' ${domainFile}
   sed -i 's/\/${thName},/\//g' ${domainFile}
@@ -77,9 +77,9 @@ set_bypass_host() {
   iptables -t mangle -I OUTPUT -m set --match-set ${thName} dst -j MARK --set-mark ${markId}
   ip rule add fwmark ${markId} table ${tableId} prio 50
 
-  echo "server=/${host}/${gatewayIP} #${thName}#" >> /etc/dnsmasq.conf
+  echo "server=/${host}/${gatewayIP} #${thName}#" >>/etc/dnsmasq.conf
 
-  cat > ${hotRouteFile} <<-EOF
+  cat >${hotRouteFile} <<-EOF
 #!/bin/sh
 ip route flush table ${tableId}
 route="\$(ip route)"
@@ -97,7 +97,7 @@ EOF
   chmod +x ${hotRouteFile}
   ${hotRouteFile}
 
-  cat > ${hotdnsqFile} <<-EOF
+  cat >${hotdnsqFile} <<-EOF
 #!/bin/sh
 gatewayIP=\$(ip route show 1/0 | head -n1 | sed -e 's/^default//' | awk '{print \$2}' | awk -F. '\$1<=255&&\$2<=255&&\$3<=255&&\$4<=255{print \$1"."\$2"."\$3"."\$4}')
 if [ -n "\${gatewayIP}" ]; then
@@ -112,14 +112,12 @@ EOF
   chmod +x ${hotdnsqFile}
   ${hotdnsqFile}
 
-  cat > ${hotiptaFile} <<-EOF
+  cat >${hotiptaFile} <<-EOF
 #!/bin/sh
 if [ "\$ACTION" = "add" ] && [ "\$DEVICE" = "br-lan" ]; then
   if [[ -z "\$(iptables -L OUTPUT -nvt mangle -w 2>/dev/null | grep ${thName} | grep -v ${markId})" ]]; then
-    iptables -t mangle -I OUTPUT -m set --match-set ${thName} dst -j ACCEPT
-  fi
-  if [[ -z "\$(iptables -L OUTPUT -nvt mangle -w 2>/dev/null | grep ${thName} | grep ${markId})" ]]; then
-    iptables -t mangle -I OUTPUT -m set --match-set ${thName} dst -j MARK --set-mark ${markId}
+    iptables -w -t mangle -I OUTPUT -m set --match-set ${thName} dst -j ACCEPT
+    iptables -w -t mangle -I OUTPUT -m set --match-set ${thName} dst -j MARK --set-mark ${markId}
   fi
 fi
 EOF
@@ -132,13 +130,13 @@ EOF
       charC="$(echo "$charA" | awk -F ":" '{print $1}')"
       charD="$(echo "$charA" | awk -F ":" '{print $2}')"
       sed -i "${charC}d" ${domainFile}
-      echo "${charD},${thName}" >> ${domainFile}
+      echo "${charD},${thName}" >>${domainFile}
     fi
   else
-    echo "ipset=/${host}/${thName}" >> ${domainFile}
+    echo "ipset=/${host}/${thName}" >>${domainFile}
   fi
   /etc/init.d/dnsmasq restart
-  nslookup "${host}" "127.0.0.1" > /dev/null 2>&1 &
+  nslookup "${host}" "127.0.0.1" >/dev/null 2>&1 &
 }
 
 start_rtty() {
