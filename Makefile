@@ -9,12 +9,12 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=rtty
 
-PKG_VERSION:=8.0.1-1
+PKG_VERSION:=8.0.1-2
 PKG_RELEASE:=hi
 PKG_HASH:=6a3044b9346caa17a5c4b2b7aa055367963fbddddd1c1c47cb6f8a1c223d4117
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL=https://github.com/innet8/rtty/releases/download/v$(PKG_VERSION)
+PKG_SOURCE:=$(PKG_NAME)-8.0.1-1.tar.gz
+PKG_SOURCE_URL=https://github.com/innet8/rtty/releases/download/v8.0.1-1
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 CMAKE_INSTALL:=1
 
