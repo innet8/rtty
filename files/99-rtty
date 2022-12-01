@@ -83,7 +83,7 @@ get_default_sn() {
 	uci set rtty.general.id="$(get_default_sn)"
 	uci set rtty.general.description="$(get_model)"
 	uci set rtty.general.onlyid="$(head /dev/urandom | md5sum | cut -c 1-8)"
-	uci set rtty.general.host="router.api.gezi.vip"
+	uci set rtty.general.host="router.api.speedbox.ink"
 	uci set rtty.general.token="6f4eb9a44902dec8e70ace48df0dbc68"
 	uci set rtty.general.password="73846d4f9c7c4e3f"
 	uci set rtty.general.ssl=1
