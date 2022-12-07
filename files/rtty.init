@@ -66,11 +66,11 @@ set_bypass_host() {
   iptables -t mangle -D OUTPUT -m set --match-set ${thName} dst -j MARK --set-mark ${markId} &>/dev/null
   ipset destroy ${thName} &>/dev/null
   ip rule del fwmark ${markId} table ${tableId} &>/dev/null
-  sed -i '/#${thName}#/d' /etc/dnsmasq.conf
-  sed -i 's/,${thName},/,/g' ${domainFile}
-  sed -i 's/,${thName}$//g' ${domainFile}
-  sed -i 's/\/${thName},/\//g' ${domainFile}
-  sed -i '/\/${thName}$/d' ${domainFile}
+  sed -i "/#${thName}#/d" /etc/dnsmasq.conf
+  sed -i "s/,${thName},/,/g" ${domainFile}
+  sed -i "s/,${thName}$//g" ${domainFile}
+  sed -i "s/\/${thName},/\//g" ${domainFile}
+  sed -i "/\/${thName}$/d" ${domainFile}
 
   ipset create ${thName} hash:net maxelem 1000000
   iptables -t mangle -I OUTPUT -m set --match-set ${thName} dst -j ACCEPT
