@@ -50,11 +50,11 @@ set_bypass_host() {
   mkdir -p /etc/hotplug.d/firewall/
 
   if [ -z "$(cat /etc/dnsmasq.conf | grep 'conf-dir=/etc/dnsmasq.d')" ]; then
-    sed -i /conf-dir=/d /etc/dnsmasq.conf
+    sed -i '/conf-dir=/d' /etc/dnsmasq.conf
     echo 'conf-dir=/etc/dnsmasq.d' >>/etc/dnsmasq.conf
   fi
   if [ -z "$(cat /etc/dnsmasq.conf | grep 'resolv-file=/etc/resolv.dnsmasq.conf')" ]; then
-    sed -i /resolv-file=/d /etc/dnsmasq.conf
+    sed -i '/resolv-file=/d' /etc/dnsmasq.conf
     echo 'resolv-file=/etc/resolv.dnsmasq.conf' >>/etc/dnsmasq.conf
   fi
 
@@ -66,7 +66,7 @@ set_bypass_host() {
   iptables -t mangle -D OUTPUT -m set --match-set ${thName} dst -j MARK --set-mark ${markId} &>/dev/null
   ipset destroy ${thName} &>/dev/null
   ip rule del fwmark ${markId} table ${tableId} &>/dev/null
-  sed -i /#${thName} #/d /etc/dnsmasq.conf
+  sed -i '/#${thName}#/d' /etc/dnsmasq.conf
   sed -i 's/,${thName},/,/g' ${domainFile}
   sed -i 's/,${thName}$//g' ${domainFile}
   sed -i 's/\/${thName},/\//g' ${domainFile}
