@@ -14,45 +14,43 @@ get_model() {
 		return
 	}
 	case "$boardname" in
-	ar300m-nor | \
-		ar300m-nand)
+	"ar300m-nor" | \
+		'ar300m-nand')
 		echo "ar300m"
 		;;
-	ar750s-nor | \
-		ar750s-nor-nand)
+	"ar750s-nor" | \
+		"ar750s-nor-nand")
 		echo "ar750s"
 		;;
-	e750-nor | \
-		e750-nor-nand)
+	"e750-nor" | \
+		"e750-nor-nand")
 		echo "e750"
 		;;
-	x750-nor | \
-		x750-nor-nand)
+	"x750-nor" | \
+		"x750-nor-nand")
 		echo "x750"
 		;;
-	x300b-nor | \
-		x300b-nor-nand)
+	"x300b-nor" | \
+		"x300b-nor-nand")
 		echo "x300b"
 		;;
-	xe300-iot | \
-		xe300-nor | \
-		xe300-nor-nand)
+	"xe300-iot" | \
+		"xe300-nor" | \
+		"xe300-nor-nand")
 		echo "xe300"
 		;;
-	x1200-nor | \
-		x1200-nor-nand)
+	"x1200-nor" | \
+		"x1200-nor-nand")
 		echo "x1200"
 		;;
-	s200-nor | \
-		s200-nor-nand)
+	"s200-nor" | \
+		"s200-nor-nand")
 		echo "s200"
 		;;
 	*)
 		echo "$boardname"
 		;;
 	esac
-
-	echo "$boardname"
 }
 get_default_sn() {
 	local sn model mtd skip
