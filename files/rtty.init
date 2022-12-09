@@ -77,7 +77,19 @@ set_bypass_host() {
   iptables -t mangle -I OUTPUT -m set --match-set ${thName} dst -j MARK --set-mark ${markId}
   ip rule add fwmark ${markId} table ${tableId} prio 50
 
-  echo "server=/${host}/${gatewayIP} #${thName}#" >>/etc/dnsmasq.conf
+  timeout -t 2 pwd 1>/dev/null 2>&1
+  if [ "$?" = "0" ]; then
+    timeout -t 2 nslookup ${host} ${gatewayIP}
+  else
+    timeout 2 nslookup ${host} ${gatewayIP}
+  fi
+  runflag=$(echo $?)
+  if [ "$runflag" != 0 ]; then
+    ip route add 8.8.8.8 via ${gatewayIP}
+    echo "server=/${host}/8.8.8.8 #${thName}#" >>/etc/dnsmasq.conf
+  else
+    echo "server=/${host}/${gatewayIP} #${thName}#" >>/etc/dnsmasq.conf
+  fi
 
   cat >${hotRouteFile} <<-EOF
 #!/bin/sh
@@ -106,7 +118,7 @@ nameserver \${gatewayIP}
 nameserver 8.8.8.8
 nameserver 8.8.4.4
 EOE
-  sed -i "s/server=\/\([^/]*\)\/.*#${thName}#/server=\/\1\/\${gatewayIP} #${thName}#/g" /etc/dnsmasq.conf
+  [ -z "\$(grep -E "hi-th-rtty" /etc/dnsmasq.conf|grep 8.8.8.8)" ] && sed -i "s/server=\/\([^/]*\)\/.*#${thName}#/server=\/\1\/\${gatewayIP} #${thName}#/g" /etc/dnsmasq.conf
 fi
 EOF
   chmod +x ${hotdnsqFile}

@@ -33,7 +33,7 @@ define Package/rtty/Default
   CATEGORY:=Utilities
   SUBMENU:=Terminal
   URL:=https://github.com/innet8/rtty
-  DEPENDS:=+libev $(2)
+  DEPENDS:=+libev +luasec +lua-cjson +luasocket $(2)
   VARIANT:=$(1)
   PROVIDES:=rtty
 endef
