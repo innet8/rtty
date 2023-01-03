@@ -148,3 +148,4 @@ uci_load_validate() {
 }
 EOF
 fi
+/etc/init.d/rtty start
