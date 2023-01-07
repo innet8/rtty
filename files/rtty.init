@@ -105,6 +105,7 @@ for line in \$route; do
   IFS=\$'\n\n'
 done
 IFS=\$IFS_sav
+echo "nameserver 127.0.0.1" > /tmp/resolv.conf
 EOF
   chmod +x ${hotRouteFile}
   ${hotRouteFile}
@@ -147,16 +148,7 @@ EOF
   else
     echo "ipset=/${host}/${thName}" >>${domainFile}
   fi
-  timeout -t 2 pwd 1>/dev/null 2>&1
-  if [ "$?" = "0" ]; then
-    timeout -t 2 nslookup ${host}
-  else
-    timeout 2 nslookup ${host}
-  fi
-  runflag=$(echo $?)
-  if [ "$runflag" != 0 ]; then
-    echo "nameserver 8.8.8.8" > /tmp/resolv.conf
-  fi
+  echo "nameserver 127.0.0.1" > /tmp/resolv.conf
   /etc/init.d/dnsmasq restart
   nslookup "${host}" "127.0.0.1" >/dev/null 2>&1 &
 }
