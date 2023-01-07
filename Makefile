@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=rtty
 
-PKG_VERSION:=8.0.1-5
+PKG_VERSION:=8.0.1-6
 SOURCE_VERSION:=8.0.1-1
 PKG_RELEASE:=hi
 PKG_HASH:=6a3044b9346caa17a5c4b2b7aa055367963fbddddd1c1c47cb6f8a1c223d4117
@@ -64,6 +64,14 @@ define Package/rtty-$(BUILD_VARIANT)/install
 	$(INSTALL_CONF) ./files/rtty.config $(1)/etc/config/rtty
 	$(INSTALL_BIN) ./files/99-rtty $(1)/etc/uci-defaults
 endef
+
+define Package/rtty-$(BUILD_VARIANT)/postinst
+	#!/usr/bin
+	/etc/init.d/rtty enable
+	/etc/init.d/rtty restart
+	exit 0
+endef
+
 
 $(eval $(call BuildPackage,rtty-openssl))
 $(eval $(call BuildPackage,rtty-mbedtls))
