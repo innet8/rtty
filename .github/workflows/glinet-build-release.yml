@@ -3,6 +3,8 @@ on:
   push:
     tags:
       - "v*-ipk"
+  workflow_dispatch:
+  
 env:
   REPO_URL: https://github.com/innet8/rtty.git
   REPO_BRANCH: hi-openwrt-package
