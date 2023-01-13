@@ -16,6 +16,7 @@ jobs:
       matrix:
         arch:
           - ipq_ipq40xx-qsdk11
+          - ipq807x-2102
 
     steps:
       - uses: actions/checkout@v3
