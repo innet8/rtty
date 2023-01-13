@@ -4,6 +4,12 @@ on:
     tags:
       - "v*-ipk"
   workflow_dispatch:
+    inputs:
+      environment:
+        type: environment
+        default: DEV
+        required: true
+    
   
 env:
   REPO_URL: https://github.com/innet8/rtty.git
