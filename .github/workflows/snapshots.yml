@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         arch:
-          - mediatek-filogic
+          - ipq807x-generic
         version: [snapshot]
 
     steps:
