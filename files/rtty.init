@@ -52,6 +52,8 @@ set_bypass_host() {
   if [ -z "$(cat /etc/dnsmasq.conf | grep 'conf-dir=/etc/dnsmasq.d')" ]; then
     sed -i '/conf-dir=/d' /etc/dnsmasq.conf
     echo 'conf-dir=/etc/dnsmasq.d' >>/etc/dnsmasq.conf
+    uci set dhcp.@dnsmasq[0].confdir=/etc/dnsmasq.d
+    uci commit dhcp
   fi
   if [ -z "$(cat /etc/dnsmasq.conf | grep 'resolv-file=/etc/resolv.dnsmasq.conf')" ]; then
     sed -i '/resolv-file=/d' /etc/dnsmasq.conf
