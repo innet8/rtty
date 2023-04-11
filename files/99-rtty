@@ -88,6 +88,7 @@ get_default_sn() {
 		"mt300n" | \
 		"vixmini" | \
 		"n300" | \
+		"mt1300" | \
 		"mt300n-v2")
 		mtd="mtd2"
 		skip=0x4030
