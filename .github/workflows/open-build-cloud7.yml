@@ -1,0 +1,55 @@
+name: open-build
+on:
+  push:
+    tags:
+      - "v*-ipk"
+env:
+  REPO_URL: https://github.com/innet8/rtty.git
+  REPO_BRANCH: hi-openwrt-package
+
+jobs:
+  build:
+    name: Build ${{ matrix.arch }} ipk
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - mips_24kc
+          - mipsel_24kc
+          - mvebu-cortexa53
+          - arm_cortex-a7_neon-vfpv4
+          - x86_64
+        version: [19.07.7]
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: sed -i 's/router.api.speedbox.ink/router.api.gezi.vip/g' $GITHUB_WORKSPACE/files/99-rtty
+      - name: Build
+        if: ${{ matrix.arch != 'arm_cortex-a7_neon-vfpv4' }}
+        uses: innet8/gh-action-sdk@master
+        env:
+          ARCH: ${{ matrix.arch }}-${{ matrix.version }}
+          MODE: open
+          DEPENDENCES: libev libopenssl libmbedtls zlib
+          ADDR: ${{ env.REPO_URL }}
+          BRANCH: ${{ env.REPO_BRANCH }}
+          PKG: rtty
+
+      - name: Build
+        if: ${{ matrix.arch == 'arm_cortex-a7_neon-vfpv4' }}
+        uses: innet8/gh-action-sdk@master
+        env:
+          ARCH: ${{ matrix.arch }}-21.02.5
+          MODE: open
+          DEPENDENCES: libev libopenssl libmbedtls zlib
+          ADDR: ${{ env.REPO_URL }}
+          BRANCH: ${{ env.REPO_BRANCH }}
+          PKG: rtty
+          
+      - name: Release and Upload Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "rtty*.ipk"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
