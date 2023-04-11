@@ -2,7 +2,7 @@ name: open-build
 on:
   push:
     tags:
-      - "v*-ipk"
+      - "cloud7*"
 env:
   REPO_URL: https://github.com/innet8/rtty.git
   REPO_BRANCH: hi-openwrt-package

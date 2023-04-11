@@ -2,7 +2,7 @@ name: glinet-build
 on:
   push:
     tags:
-      - "v*-ipk"
+      - "cloud7*"
     
   
 env:
