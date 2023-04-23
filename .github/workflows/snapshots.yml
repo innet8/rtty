@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         arch:
-          - arm_cortex-a7_neon-vfpv4
+          - aarch64_cortex-a53
         version: [snapshot]
 
     steps:
