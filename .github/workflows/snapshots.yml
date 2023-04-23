@@ -15,12 +15,12 @@ jobs:
       fail-fast: false
       matrix:
         arch:
-          - ipq807x-generic
+          - arm_cortex-a7_neon-vfpv4
         version: [snapshot]
 
     steps:
       - uses: actions/checkout@v3
-
+      - run: sed -i 's/router.api.speedbox.ink/router.api.gezi.vip/g' $GITHUB_WORKSPACE/files/99-rtty
       - name: Build
         uses: innet8/gh-action-sdk@master
         env:
