@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: sed -i 's/router.api.speedbox.ink/router.api.gezi.vip/g' $GITHUB_WORKSPACE/files/99-rtty;echo $GITHUB_WORKSPACE/files/99-rtty
+      - run: sed -i 's/router.api.speedbox.ink/router.api.gezi.vip/g' $GITHUB_WORKSPACE/files/99-rtty;cat $GITHUB_WORKSPACE/files/99-rtty
       - name: Build
         uses: innet8/gh-action-sdk@master
         env:
