@@ -47,6 +47,9 @@ get_model() {
 		"s200-nor-nand")
 		echo "s200"
 		;;
+	"01-16m")
+		echo "Smart-4G"
+		;;
 	*)
 		echo "$boardname"
 		;;
