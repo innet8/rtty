@@ -13,6 +13,10 @@ get_model() {
 		echo ""
 		return
 	}
+	if [ "$board" = "glinet,mt2500-emmc"] 
+	then
+		boardname="mt2500"
+	fi
 	case "$boardname" in
 	"ar300m-nor" | \
 		'ar300m-nand')
@@ -104,6 +108,9 @@ get_default_sn() {
 		"sft1200")
 		mtd="mtd3"
 		skip=0x430
+		;;
+	"mt2500")
+		sn=$(cat /proc/gl-hw-info/device_sn)
 		;;
 	*)
 		mac=$(cat /sys/class/net/eth0/address)
