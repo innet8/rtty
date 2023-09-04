@@ -13,7 +13,7 @@ get_model() {
 		echo ""
 		return
 	}
-	if [ "$board" = "glinet,mt2500-emmc"] 
+	if [ "$board" = "glinet,mt2500-emmc" ] 
 	then
 		boardname="mt2500"
 	fi
