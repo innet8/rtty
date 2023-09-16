@@ -23,7 +23,7 @@ jobs:
         uses: innet8/gh-action-sdk@master
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.version }}
-          MODE: all
+          MODE: open
           DEPENDENCES: libev libopenssl libmbedtls zlib
           ADDR: ${{ env.REPO_URL }}
           BRANCH: ${{ env.REPO_BRANCH }}
